@@ -241,7 +241,7 @@ public final class Decoder {
         do {
             try engine.start()
         } catch let error as NSError {
-            end_utt()
+            endUtterence()
             print("Can't start AVAudioEngine: \(error)")
             throw DecodeErrors.CantStartAudioEngine(error)
         }
@@ -253,30 +253,30 @@ public final class Decoder {
     }
     
     public func startUtterence() {
-		self.start_utt()
-	}
+		    self.start_utt()
+	  }
 	
-	public func startDecodingBuffer(buffer: AVAudioPCMBuffer!, time: AVAudioTime!, utteranceComplete: @escaping (Hypothesis?)-> ()) throws {
+	  public func startDecodingBuffer(buffer: AVAudioPCMBuffer!, time: AVAudioTime!, utteranceComplete: @escaping (Hypothesis?)-> ()) throws {
 		
-		let audioData = buffer.toData()
-		self.process_raw(audioData)
+		   let audioData = buffer.toData()
+	  	  self.process_raw(audioData)
 		
-		if self.speechState == .utterance {
+		   if self.speechState == .utterance {
 			
-			self.endUtterence()
-			let hypothesis = self.get_hyp()
+		  	  self.endUtterence()
+		    	let hypothesis = self.get_hyp()
 			
-			DispatchQueue.main.async {
-				utteranceComplete(hypothesis)
-			}
+		  	  DispatchQueue.main.async {
+			    	utteranceComplete(hypothesis)
+		  	  }
 			
-			self.startUtterence()
-		}
-	}
+			    self.startUtterence()
+		    }
+	  }
 	
     public func endUtterence() {
-		self.end_utt()
-	}
+		  self.end_utt()
+	  }
 	
     public func add(words:Array<(word: String, phones: String)>) throws {
 
