@@ -169,16 +169,16 @@ public final class Decoder {
         }
     }
     
-    
-    public func startDecodingSpeech (_ utteranceComplete: @escaping (Hypothesis?) -> ()) throws {
+   
+		public func startDecodingSpeech (_ audioSessionCategoryOptions:AVAudioSessionCategoryOptions = [.mixWithOthers, .allowBluetoothA2DP],  utteranceComplete: @escaping (Hypothesis?) -> ()) throws {
         
         do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.mixWithOthers, .allowBluetoothA2DP])
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: audioSessionCategoryOptions)
         } catch let error as NSError {
             print("Error setting the shared AVAudioSession: \(error)")
             throw DecodeErrors.CantSetAudioSession(error)
         }
-
+       
         engine = AVAudioEngine()
 
         let input = engine.inputNode
@@ -276,7 +276,7 @@ public final class Decoder {
 	  }
 	
     public func endUtterence() {
-		  self.end_utt()
+		  	self.end_utt()
 	  }
 	
     public func add(words:Array<(word: String, phones: String)>) throws {
