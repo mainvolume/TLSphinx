@@ -125,7 +125,7 @@ public final class Decoder {
 
     fileprivate func hypotesisForSpeech (inFile fileHandle: FileHandle) -> Hypothesis? {
 
-        start_utt()
+        startUtterence()
 
         let hypothesis = fileHandle.reduceChunks(2048, initial: nil, reducer: {
             (data: Data, partialHyp: Hypothesis?) -> Hypothesis? in
@@ -135,15 +135,15 @@ public final class Decoder {
             var resultantHyp = partialHyp
             if speechState == .utterance {
 
-                end_utt()
+                stopUtterence()
                 resultantHyp = partialHyp + get_hyp()
-                start_utt()
+                startUtterence()
             }
 
             return resultantHyp
         })
 
-        end_utt()
+        stopUtterence()
 
         //Process any pending speech
         if speechState == .speech {
@@ -225,18 +225,18 @@ public final class Decoder {
 
             if self.speechState == .utterance {
 
-                self.end_utt()
+                self.endUtterence()
                 let hypothesis = self.get_hyp()
 
                 DispatchQueue.main.async {
                     utteranceComplete(hypothesis)
                 }
 
-                self.start_utt()
+                self.startUtterence()
             }
         })
 
-        start_utt()
+        startUtterence()
 
         do {
             try engine.start()
@@ -251,7 +251,33 @@ public final class Decoder {
         engine.stop()
         engine = nil
     }
-
+    
+    public func startUtterence() {
+		self.start_utt()
+	}
+	
+	public func startDecodingBuffer(buffer: AVAudioPCMBuffer!, time: AVAudioTime!, utteranceComplete: @escaping (Hypothesis?)-> ()) throws {
+		
+		let audioData = buffer.toData()
+		self.process_raw(audioData)
+		
+		if self.speechState == .utterance {
+			
+			self.endUtterence()
+			let hypothesis = self.get_hyp()
+			
+			DispatchQueue.main.async {
+				utteranceComplete(hypothesis)
+			}
+			
+			self.startUtterence()
+		}
+	}
+	
+    public func endUtterence() {
+		self.end_utt()
+	}
+	
     public func add(words:Array<(word: String, phones: String)>) throws {
 
         guard engine == nil || !engine.isRunning else {
