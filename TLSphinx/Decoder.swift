@@ -168,9 +168,8 @@ public final class Decoder {
             }
         }
     }
-    
-   
-		public func startDecodingSpeech (_ audioSessionCategoryOptions:AVAudioSessionCategoryOptions = [.mixWithOthers, .allowBluetoothA2DP],  utteranceComplete: @escaping (Hypothesis?) -> ()) throws {
+	
+    public func startDecodingSpeech (_ audioSessionCategoryOptions:AVAudioSessionCategoryOptions = [.mixWithOthers, .allowBluetoothA2DP],  utteranceComplete: @escaping (Hypothesis?) -> ()) throws {
         
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: audioSessionCategoryOptions)
