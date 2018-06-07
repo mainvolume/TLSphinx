@@ -11,6 +11,7 @@ import Foundation
 import AVFoundation
 import Sphinx
 
+//A global buffer size in the decoder to be used when initialize the models -nfft parameter
 public let bufferSize = 16384
 
 fileprivate enum SpeechStateEnum : CustomStringConvertible {
